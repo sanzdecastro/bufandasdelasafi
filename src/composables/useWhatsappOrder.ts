@@ -1,6 +1,7 @@
 import { computed } from 'vue'
 import { COPY } from '../data/copy'
 import { useScarfConfig } from './useScarfConfig'
+import { orderQuery } from '../scarf/order'
 
 /** Número en formato internacional sin «+» ni espacios. Vacío → WhatsApp pide elegir contacto. */
 const PHONE = String(
@@ -8,7 +9,10 @@ const PHONE = String(
 ).replace(/\D/g, '')
 
 export function useWhatsappOrder() {
-  const { length, baseColor, fringeColor, price } = useScarfConfig()
+  const { state, length, baseColor, fringeColor, price } = useScarfConfig()
+
+  /** Enlace del pedido: WhatsApp muestra su vista previa con la imagen de la bufanda */
+  const orderUrl = computed(() => `${location.origin}/p?${orderQuery(state)}`)
 
   const message = computed(() => {
     const t = COPY.order
@@ -18,6 +22,8 @@ export function useWhatsappOrder() {
       `- ${t.baseColor}: ${baseColor.value.name}`,
       `- ${t.fringe}: ${fringeColor.value ? fringeColor.value.name : t.noFringe}`,
       `- ${t.price}: ${price.value}€`,
+      '',
+      orderUrl.value,
     ].join('\n')
   })
 
@@ -25,5 +31,5 @@ export function useWhatsappOrder() {
     () => `https://wa.me/${PHONE}?text=${encodeURIComponent(message.value)}`,
   )
 
-  return { message, url }
+  return { message, url, orderUrl }
 }

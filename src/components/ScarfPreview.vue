@@ -1,12 +1,18 @@
 <script setup lang="ts">
-// Bufanda generada en SVG a partir de la estructura del frame 3:7958 de Figma.
-// El cuerpo es un canalé: se repite el par de columnas A + B (15 px):
-//   A · 10 px de ancho: 43 puntos horizontales (cápsulas de 10 × 5–6) apilados en 219 px
-//   B ·  5 px de ancho: 22 puntos verticales (cápsulas de 5 × ~10) repartidos en 219 px
-// Los flecos son 10 columnas tipo A con puntos alternos (lleno / hueco), sin borde.
+// Bufanda en SVG. La geometría (canalé A + B y flecos) está en src/scarf/geometry.ts,
+// compartida con la imagen que se genera para WhatsApp.
 import { computed, ref } from 'vue'
 import { useDragScroll } from '../composables/useDragScroll'
 import type { YarnColor } from '../data/options'
+import {
+  bStitches,
+  COLUMN_B_W,
+  COLUMN_W,
+  FRINGE_COLUMNS,
+  HEIGHT,
+  RIB_W,
+  stitches,
+} from '../scarf/geometry'
 
 // Escritorio: arrastrar la bufanda con el ratón o desplazarla con la rueda
 const previewEl = ref<HTMLElement | null>(null)
@@ -18,23 +24,6 @@ const props = defineProps<{
   bodyRibs: number
   label: string
 }>()
-
-const COLUMN_W = 10
-const COLUMN_B_W = 5
-const RIB_W = COLUMN_W + COLUMN_B_W
-const FRINGE_COLUMNS = 10
-const B_STITCHES = 22
-const STITCH_HEIGHTS = [6, 5, 6, 6, 5, ...Array<number>(37).fill(5), 6]
-const HEIGHT = STITCH_HEIGHTS.reduce((a, b) => a + b, 0) // 219
-
-const stitches = STITCH_HEIGHTS.reduce<{ y: number; h: number }[]>((acc, h) => {
-  const prev = acc[acc.length - 1]
-  acc.push({ y: prev ? prev.y + prev.h : 0, h })
-  return acc
-}, [])
-
-const bStitchH = 219 / B_STITCHES
-const bStitches = Array.from({ length: B_STITCHES }, (_, i) => ({ y: i * bStitchH, h: bStitchH }))
 
 const fringeWidth = computed(() => (props.fringe ? FRINGE_COLUMNS * COLUMN_W : 0))
 const bodyWidth = computed(() => props.bodyRibs * RIB_W)

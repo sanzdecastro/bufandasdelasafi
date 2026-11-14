@@ -8,6 +8,7 @@ import {
   findColor,
 } from '../data/options'
 import { proposeColors } from '../data/proposal'
+import { parseOrder } from '../scarf/order'
 
 const STORAGE_KEY = 'safi:scarf-length'
 
@@ -23,8 +24,18 @@ function loadLength(): string {
   }
 }
 
+/**
+ * Estado inicial: si se llega desde el enlace de un pedido (/?l=90&b=7285&f=7928), esa
+ * bufanda; si no, el largo recordado y una propuesta de color nueva.
+ */
+function initialConfig(): Config {
+  const shared = parseOrder(new URLSearchParams(location.search))
+  if (shared) return shared
+  return { lengthId: loadLength(), ...proposeColors() }
+}
+
 // Estado compartido a nivel de módulo: una sola bufanda por sesión.
-const state = reactive<Config>({ lengthId: loadLength(), ...proposeColors() })
+const state = reactive<Config>(initialConfig())
 
 watch(
   () => state.lengthId,
