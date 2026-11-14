@@ -4,8 +4,13 @@
 //   A · 10 px de ancho: 43 puntos horizontales (cápsulas de 10 × 5–6) apilados en 219 px
 //   B ·  5 px de ancho: 22 puntos verticales (cápsulas de 5 × ~10) repartidos en 219 px
 // Los flecos son 10 columnas tipo A con puntos alternos (lleno / hueco), sin borde.
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useDragScroll } from '../composables/useDragScroll'
 import type { YarnColor } from '../data/options'
+
+// Escritorio: arrastrar la bufanda con el ratón o desplazarla con la rueda
+const previewEl = ref<HTMLElement | null>(null)
+useDragScroll(previewEl)
 
 const props = defineProps<{
   base: YarnColor
@@ -47,7 +52,7 @@ const vars = computed(() => ({
 </script>
 
 <template>
-  <div class="preview" data-enter="slide-left">
+  <div ref="previewEl" class="preview" data-enter="slide-left">
     <svg
       class="scarf"
       :width="width"
@@ -128,6 +133,17 @@ const vars = computed(() => ({
   overflow-x: auto;
   padding: 0 calc(42 * var(--u));
   scrollbar-width: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .preview {
+    cursor: grab;
+  }
+
+  .preview.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
 }
 
 .preview::-webkit-scrollbar {

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { hapticTick } from '../composables/useHaptics'
+import { useDragScroll } from '../composables/useDragScroll'
 
 defineProps<{ label: string; gap?: 'text' | 'swatch' }>()
 
 const lane = ref<HTMLElement | null>(null)
+// Escritorio: arrastrar con el ratón y rueda vertical → horizontal, con snap al soltar
+useDragScroll(lane, { snap: true })
 const labelEl = ref<HTMLElement | null>(null)
 /** true cuando, al deslizar, las opciones llegan a la etiqueta: la etiqueta pasa por delante */
 const covered = ref(false)
@@ -146,6 +149,19 @@ onBeforeUnmount(() => {
   /* Snap: al soltar, una opción queda alineada al inicio del carril (145 px) */
   scroll-snap-type: x mandatory;
   scroll-padding-left: var(--label-column);
+}
+
+/* Escritorio: se puede arrastrar con el ratón */
+@media (hover: hover) and (pointer: fine) {
+  .options {
+    cursor: grab;
+  }
+
+  .options.is-dragging,
+  .options.is-dragging :slotted(*) {
+    cursor: grabbing;
+    user-select: none;
+  }
 }
 
 /* Cada opción es un punto de snap; se pueden saltar varias en un mismo gesto */
