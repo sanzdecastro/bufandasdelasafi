@@ -3,10 +3,10 @@
 // La bufanda se dibuja con la misma geometría que en la web y sobre el fondo pastel del tema.
 
 import { Resvg } from '@resvg/resvg-js'
-import { findColor, LENGTHS, RIBS_PER_90CM } from '../src/data/options'
-import { computeTheme } from '../src/composables/useTheme'
-import { scarfSize, scarfSvg } from '../src/scarf/geometry'
-import { parseOrder } from '../src/scarf/order'
+import { findColor, LENGTHS, RIBS_PER_90CM } from '../src/data/options.js'
+import { computeTheme } from '../src/composables/useTheme.js'
+import { scarfSize, scarfSvg } from '../src/scarf/geometry.js'
+import { parseOrder } from '../src/scarf/order.js'
 
 const W = 1200
 const H = 630

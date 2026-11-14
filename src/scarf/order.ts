@@ -1,8 +1,11 @@
 // El pedido en la URL: /p?l=90&b=7285&f=7928  (f=0 → sin flecos)
 // Lo usan la web (para generar el enlace del mensaje y para abrir un pedido compartido)
 // y las funciones de Vercel (imagen y página con vista previa para WhatsApp).
+//
+// Los imports relativos llevan «.js»: las funciones de Vercel se ejecutan como ESM sin
+// empaquetar y Node lo exige. Vite y TypeScript lo resuelven al fichero .ts.
 
-import { findColor, LENGTHS } from '../data/options'
+import { findColor, LENGTHS } from '../data/options.js'
 
 export interface OrderParams {
   lengthId: string

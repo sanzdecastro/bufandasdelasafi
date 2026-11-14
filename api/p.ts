@@ -3,8 +3,8 @@
 // - A WhatsApp le da las etiquetas Open Graph con la imagen de la bufanda (vista previa).
 // - A las personas las lleva a la web con ese pedido cargado.
 
-import { findColor, FRINGE_PRICE_EUR, LENGTHS } from '../src/data/options'
-import { orderQuery, parseOrder } from '../src/scarf/order'
+import { findColor, FRINGE_PRICE_EUR, LENGTHS } from '../src/data/options.js'
+import { orderQuery, parseOrder } from '../src/scarf/order.js'
 
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')

@@ -1,4 +1,4 @@
-import { DMC_PALETTES } from './dmc-palettes'
+import { DMC_PALETTES } from './dmc-palettes.js'
 
 export interface YarnColor {
   /** Código DMC (p. ej. «7106», «BLANC») */

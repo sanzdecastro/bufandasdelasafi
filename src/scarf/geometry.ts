@@ -6,7 +6,7 @@
 //   B ·  5 px de ancho: 22 puntos verticales (cápsulas de 5 × ~10) repartidos en 219 px
 // Los flecos son 10 columnas tipo A con puntos alternos (lleno / hueco), sin borde.
 
-import type { YarnColor } from '../data/options'
+import type { YarnColor } from '../data/options.js'
 
 export const COLUMN_W = 10
 export const COLUMN_B_W = 5
