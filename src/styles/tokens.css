@@ -1,0 +1,106 @@
+/* Tokens sacados de las Variables de Figma (colección «Carta»). */
+
+@font-face {
+  font-family: 'Offset TM';
+  src:
+    local('Offset TM'),
+    local('OffsetTM'),
+    url('/fonts/OffsetTM.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
+ * Unidad proporcional: --u = 1 px del diseño de Figma (lienzo móvil de 393 × 852).
+ * Todo (tipografías, medidas, huecos) se expresa como calc(N * var(--u)).
+ *
+ * - Vertical (móvil): manda el ancho de pantalla, con un tope por altura para que la app
+ *   siga cabiendo en 100svh en móviles bajos (640 = altura mínima que necesita el diseño).
+ * - Horizontal (escritorio): se mantiene la distribución móvil en su proporción 393:852,
+ *   a toda la altura de la ventana y centrada.
+ */
+:root {
+  --u: min(calc(100vw / 393), calc(100svh / 640));
+}
+
+@media (orientation: landscape) {
+  :root {
+    --u: min(calc(100vw / 393), calc(100svh / 852));
+  }
+}
+
+:root {
+  /* Paleta Carta (nombre de la variable en Figma → hex) */
+  --carta-07-7038: #045db9;
+  --carta-07-714: #b0dfe8;
+  --carta-07-7596: #034d6b;
+  --carta-01-7106: #d82732;
+  --carta-01-7666: #c11119;
+  --carta-04-7024: #cab9e6;
+  --carta-20-7292: #94a7b6;
+
+  /* Semánticos */
+  --color-bg: #fffafc;
+  --color-brand: var(--carta-07-7038);
+  --color-highlight: var(--carta-07-714);
+  --color-swatch-ring: #000;
+  --color-cta-text: var(--carta-07-7596);
+  --color-cta-bg: rgba(0, 0, 0, 0.1);
+
+  /* Tipografía */
+  --font-display: 'Offset TM', 'Helvetica Neue', Arial, sans-serif;
+  --text-xl: calc(32 * var(--u));
+  --text-l: calc(30 * var(--u));
+  --text-intro: calc(30.41 * var(--u));
+
+  /* Medidas del builder */
+  --row-height: calc(37 * var(--u));
+  --label-column: calc(145 * var(--u));
+  --swatch-size: calc(37 * var(--u));
+  --swatch-gap: calc(5 * var(--u));
+  --option-gap: calc(19 * var(--u));
+}
+
+/*
+ * Colores del tema registrados como <color> para que el cambio de combinación
+ * se vea como una transición suave en toda la web (fondo, textos, firma, resaltado).
+ */
+@property --color-bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #fffafc;
+}
+
+@property --color-brand {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #045db9;
+}
+
+@property --color-highlight {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #b0dfe8;
+}
+
+@property --color-cta-text {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #034d6b;
+}
+
+/* Solo tras el primer pintado (App.vue añade .theme-ready), para no animar la carga */
+:root.theme-ready {
+  transition:
+    --color-bg 0.5s ease,
+    --color-brand 0.5s ease,
+    --color-highlight 0.5s ease,
+    --color-cta-text 0.5s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    transition: none;
+  }
+}

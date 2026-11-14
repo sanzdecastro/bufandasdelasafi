@@ -1,0 +1,80 @@
+/*
+ * Entrada de la home tras la intro. ScarfBuilder añade .entering a .builder y pone a cada
+ * elemento su retardo en --enter-delay; al terminar quita la clase (así lo que aparezca
+ * después, como nuevas sugerencias de color, no se anima).
+ *   clip        · cabecera: se descubre de izquierda a derecha bajo una máscara de recorte
+ *   fade        · etiquetas y opciones de las filas
+ *   slide-left  · bufanda: entra un poco desde la derecha con fundido
+ *   slide-up    · botón de encargar: sube desde abajo
+ */
+.entering [data-enter] {
+  animation-duration: 0.45s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  animation-delay: var(--enter-delay, 0ms);
+}
+
+.entering [data-enter='clip'] {
+  animation-name: enter-clip;
+  animation-duration: 0.55s;
+}
+
+.entering [data-enter='fade'] {
+  animation-name: enter-fade;
+  animation-duration: 0.4s;
+  animation-timing-function: ease-out;
+}
+
+.entering [data-enter='slide-left'] {
+  animation-name: enter-slide-left;
+  animation-duration: 0.8s;
+}
+
+.entering [data-enter='slide-up'] {
+  animation-name: enter-slide-up;
+  animation-duration: 0.6s;
+}
+
+@keyframes enter-clip {
+  from {
+    clip-path: inset(-10% 100% -10% 0);
+  }
+  to {
+    clip-path: inset(-10% 0 -10% 0);
+  }
+}
+
+@keyframes enter-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes enter-slide-left {
+  from {
+    opacity: 0;
+    transform: translateX(calc(32 * var(--u)));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes enter-slide-up {
+  from {
+    transform: translateY(calc(100% + 13 * var(--u)));
+  }
+  to {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entering [data-enter] {
+    animation: none;
+  }
+}
