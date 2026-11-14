@@ -3,7 +3,9 @@ import { COPY } from '../data/copy'
 import { useScarfConfig } from './useScarfConfig'
 
 /** Número en formato internacional sin «+» ni espacios. Vacío → WhatsApp pide elegir contacto. */
-const PHONE = (import.meta.env.VITE_WHATSAPP_NUMBER ?? '').replace(/\D/g, '')
+const PHONE = String(
+  import.meta.env.WHATSAPP_NUMBER ?? import.meta.env.VITE_WHATSAPP_NUMBER ?? '',
+).replace(/\D/g, '')
 
 export function useWhatsappOrder() {
   const { length, baseColor, fringeColor, price } = useScarfConfig()
