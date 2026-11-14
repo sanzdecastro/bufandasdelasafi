@@ -23,7 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
-# Offset TM: licencia de escritorio. No se versiona hasta tener licencia web.
-public/fonts/
+# Offset TM: se versiona solo la woff2 (licencia web). Los .otf/.ttf de escritorio, fuera.
+public/fonts/*.otf
+public/fonts/*.ttf
 
 .env
