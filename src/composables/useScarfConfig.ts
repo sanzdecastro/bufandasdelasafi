@@ -6,7 +6,7 @@ import {
   LENGTHS,
   findColor,
 } from '../data/options'
-import { proposeColors } from '../data/proposal'
+import { proposeColors, proposeOtherColors } from '../data/proposal'
 import { parseOrder } from '../scarf/order'
 
 const STORAGE_KEY = 'safi:scarf-length'
@@ -54,5 +54,10 @@ export function useScarfConfig() {
   /** Precio total: largo + suplemento si lleva flecos */
   const price = computed(() => length.value.price + (fringeColor.value ? FRINGE_PRICE_EUR : 0))
 
-  return { state, length, baseColor, fringeColor, price }
+  /** «Otra combinación»: nueva propuesta de color; mantiene el largo y «Sin flecos» */
+  function shuffleColors() {
+    Object.assign(state, proposeOtherColors(state))
+  }
+
+  return { state, length, baseColor, fringeColor, price, shuffleColors }
 }

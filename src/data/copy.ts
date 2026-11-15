@@ -17,6 +17,8 @@ export const COPY = {
     strong: 'algodon 100%',
     rest: 'tejida a mano con materiales D·M·C.',
   },
+  /** Enlace bajo la bufanda que carga otra propuesta de colores */
+  shuffle: 'Otra combinación',
   /** Botón que abre el panel con las 20 cartas DMC */
   moreColors: '+ colores',
   sameAsBase: 'Igual que la base',

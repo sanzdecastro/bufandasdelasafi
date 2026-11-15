@@ -1,13 +1,35 @@
 <script setup lang="ts">
 // Bajo la bufanda (Figma 15:8273): descripción + «Base DMC 7133 · Flecos DMC 7135»
+import { ref } from 'vue'
+import { Shuffle } from 'lucide-vue-next'
 import { COPY } from '../data/copy'
 import type { YarnColor } from '../data/options'
+import { hapticTick } from '../composables/useHaptics'
+import { useScarfConfig } from '../composables/useScarfConfig'
 
 defineProps<{ base: YarnColor; fringe: YarnColor | null }>()
+
+const { shuffleColors } = useScarfConfig()
+
+// El icono gira media vuelta en cada pulsación
+const turns = ref(0)
+function shuffle() {
+  shuffleColors()
+  turns.value += 1
+  hapticTick()
+}
 </script>
 
 <template>
   <div class="caption">
+    <button type="button" class="shuffle" @click="shuffle">
+      <Shuffle
+        class="shuffle-icon"
+        :style="{ transform: `rotate(${turns * 180}deg)` }"
+        aria-hidden="true"
+      />
+      <span class="shuffle-text">{{ COPY.shuffle }}</span>
+    </button>
     <p class="description">
       {{ COPY.scarfDescription.lead }} <strong>{{ COPY.scarfDescription.strong }}</strong><br />{{
         COPY.scarfDescription.rest
@@ -34,6 +56,7 @@ defineProps<{ base: YarnColor; fringe: YarnColor | null }>()
 <style scoped>
 /* Figma: columna con 12 px a los lados y 10 px entre la descripción y los colores */
 .caption {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: calc(10 * var(--u));
@@ -43,6 +66,50 @@ defineProps<{ base: YarnColor; fringe: YarnColor | null }>()
 
 .caption p {
   margin: 0;
+}
+
+/*
+ * «Otra combinación»: enlace en la primera línea de la descripción, a la derecha (la primera
+ * línea es corta y deja sitio). Mismo tamaño que la descripción, subrayado como los enlaces.
+ */
+.shuffle {
+  position: absolute;
+  top: 0;
+  right: calc(12 * var(--u));
+  display: flex;
+  align-items: center;
+  gap: calc(4 * var(--u));
+  font-family: var(--font-caption);
+  font-size: var(--text-description);
+  line-height: var(--leading-description);
+  color: var(--color-brand);
+}
+
+.shuffle-text {
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  text-underline-position: from-font;
+}
+
+.shuffle-icon {
+  flex: none;
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+  stroke-width: 1.75;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Área táctil mayor que el texto, sin mover nada */
+.shuffle::after {
+  content: '';
+  position: absolute;
+  inset: calc(-10 * var(--u)) calc(-8 * var(--u));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shuffle-icon {
+    transition: none;
+  }
 }
 
 /* Descripción: Arimo 16 px a todo el ancho (dos líneas en el diseño) */

@@ -101,6 +101,22 @@ export function proposeColors(): ColorProposal {
 }
 
 /**
+ * Otra propuesta distinta de la actual («Otra combinación»). Si la bufanda va sin flecos,
+ * se mantiene sin flecos y solo cambia la base.
+ */
+export function proposeOtherColors(current: {
+  baseColorId: string
+  fringeColorId: string | null
+}): { baseColorId: string; fringeColorId: string | null } {
+  let next = proposeColors()
+  for (let i = 0; i < 10 && next.baseColorId === current.baseColorId; i++) next = proposeColors()
+  return {
+    baseColorId: next.baseColorId,
+    fringeColorId: current.fringeColorId === null ? null : next.fringeColorId,
+  }
+}
+
+/**
  * Sugerencias para la base: la misma familia de color (tono ±30°, o neutros si la base es
  * neutra), repartidas de claro a oscuro. Cambian cuando cambia la base.
  */
