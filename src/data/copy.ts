@@ -11,7 +11,12 @@ export const COPY = {
   /** Presentación bajo la cabecera (Figma 15:8294) */
   intro: 'Safi confecciona la bufanda personalizada para ti o para la persona que tienes en mente.',
   /** Descripción bajo la bufanda (Figma 15:8292) */
-  scarfDescription: 'Bufanda de algodon 100% tejida a mano con materiales DMC.',
+  // Primera línea con el material en negrita; la segunda va en línea aparte (Figma 15:8292)
+  scarfDescription: {
+    lead: 'Bufanda de',
+    strong: 'algodon 100%',
+    rest: 'tejida a mano con materiales D·M·C.',
+  },
   /** Botón que abre el panel con las 20 cartas DMC */
   moreColors: '+ colores',
   sameAsBase: 'Igual que la base',
