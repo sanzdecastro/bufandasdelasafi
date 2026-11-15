@@ -14,7 +14,7 @@ import PaletteSheet from './PaletteSheet.vue'
 import ScarfPreview from './ScarfPreview.vue'
 import WhatsappButton from './WhatsappButton.vue'
 
-const { state, length, baseColor, fringeColor, bodyRibs } = useScarfConfig()
+const { state, length, baseColor, fringeColor } = useScarfConfig()
 
 const previewLabel = computed(
   () =>
@@ -173,7 +173,6 @@ function pickFromSheet(id: string) {
       class="scarf"
       :base="baseColor"
       :fringe="fringeColor"
-      :body-ribs="bodyRibs"
       :label="previewLabel"
     />
 

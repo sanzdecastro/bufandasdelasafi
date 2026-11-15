@@ -28,12 +28,6 @@ export interface LengthOption {
   price: number
 }
 
-/**
- * Canalés del cuerpo para 90 cm (frame 3:7958 de Figma: 42 pares de columnas A+B = 630 px).
- * Los demás largos escalan en proporción.
- */
-export const RIBS_PER_90CM = 42
-
 /** Suplemento por añadir flecos, en euros (igual para todos los largos) */
 export const FRINGE_PRICE_EUR = 5
 

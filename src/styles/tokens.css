@@ -88,6 +88,19 @@
   initial-value: #034d6b;
 }
 
+/* Colores de la bufanda (ScarfPreview): se animan al cambiar de combinación */
+@property --scarf-base {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffffff;
+}
+
+@property --scarf-fringe {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffffff;
+}
+
 /* Solo tras el primer pintado (App.vue añade .theme-ready), para no animar la carga */
 :root.theme-ready {
   transition:

@@ -38,8 +38,8 @@ export function GET(request: Request): Response {
 <meta property="og:url" content="${esc(`${url.origin}/p?${query}`)}">
 <meta property="og:image" content="${esc(image)}">
 <meta property="og:image:type" content="image/png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="420">
 <meta name="twitter:card" content="summary_large_image">
 <meta http-equiv="refresh" content="0;url=${esc(app)}">
 </head>

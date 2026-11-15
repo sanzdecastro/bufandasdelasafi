@@ -1,7 +1,6 @@
 import { computed, reactive, watch } from 'vue'
 import {
   ALL_COLORS,
-  RIBS_PER_90CM,
   DEFAULT_CONFIG,
   FRINGE_PRICE_EUR,
   LENGTHS,
@@ -52,9 +51,8 @@ export function useScarfConfig() {
   const length = computed(() => LENGTHS.find((l) => l.id === state.lengthId) ?? LENGTHS[0]!)
   const baseColor = computed(() => findColor(state.baseColorId) ?? ALL_COLORS[0]!)
   const fringeColor = computed(() => findColor(state.fringeColorId))
-  const bodyRibs = computed(() => Math.round((RIBS_PER_90CM * length.value.cm) / 90))
   /** Precio total: largo + suplemento si lleva flecos */
   const price = computed(() => length.value.price + (fringeColor.value ? FRINGE_PRICE_EUR : 0))
 
-  return { state, length, baseColor, fringeColor, bodyRibs, price }
+  return { state, length, baseColor, fringeColor, price }
 }

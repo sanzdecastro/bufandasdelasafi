@@ -1,4 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [{ "source": "/p", "destination": "/api/p" }]
+  "rewrites": [{ "source": "/p", "destination": "/api/p" }],
+  "functions": {
+    "api/og.ts": { "includeFiles": "public/scarf/**" }
+  }
 }

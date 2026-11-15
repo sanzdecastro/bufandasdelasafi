@@ -1,41 +1,51 @@
-// Imagen del pedido (PNG 1200 × 630) para la vista previa del enlace en WhatsApp.
+// Imagen del pedido (PNG 800 × 420, proporción 1.91:1) para la vista previa del enlace en
+// WhatsApp. Tamaño contenido: WhatsApp no siempre muestra imágenes de más de ~300 KB.
 // GET /api/og?l=90&b=7285&f=7928
-// La bufanda se dibuja con la misma geometría que en la web y sobre el fondo pastel del tema.
+// La bufanda es la misma foto teñida que en la web (src/scarf/photo.ts), sobre el fondo pastel
+// del tema de esa combinación.
 
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { Resvg } from '@resvg/resvg-js'
-import { findColor, LENGTHS, RIBS_PER_90CM } from '../src/data/options.js'
+import { findColor } from '../src/data/options.js'
 import { computeTheme } from '../src/composables/useTheme.js'
-import { scarfSize, scarfSvg } from '../src/scarf/geometry.js'
+import { PHOTO_H, PHOTO_W, scarfPhotoSvg } from '../src/scarf/photo.js'
 import { parseOrder } from '../src/scarf/order.js'
 
-const W = 1200
-const H = 630
-const MARGIN_X = 60
+const W = 800
+const H = 420
+const MARGIN = 20
+
+// Capas de la foto (vercel.json las incluye en la función con includeFiles)
+const layer = (name: string) =>
+  `data:image/png;base64,${readFileSync(join(process.cwd(), 'public/scarf', name)).toString('base64')}`
+const BODY = layer('cuerpo.png')
+const FRINGE = layer('flecos.png')
 
 export function GET(request: Request): Response {
   const order = parseOrder(new URL(request.url).searchParams)
   if (!order) return new Response('Pedido no válido', { status: 400 })
 
-  const length = LENGTHS.find((l) => l.id === order.lengthId)!
   const base = findColor(order.baseColorId)!
   const fringe = findColor(order.fringeColorId)
-  const ribs = Math.round((RIBS_PER_90CM * length.cm) / 90)
   const theme = computeTheme(base.fill, fringe?.fill ?? null)
 
-  // Bufanda escalada al ancho de la imagen y centrada
-  const size = scarfSize(ribs, !!fringe)
-  const scale = Math.min((W - MARGIN_X * 2) / size.width, (H * 0.7) / size.height)
-  const w = size.width * scale
-  const h = size.height * scale
-  // Se sustituye la etiqueta de apertura para colocar y escalar la bufanda dentro de la imagen
-  const scarf = scarfSvg(base, fringe, ribs).replace(
+  // Foto escalada al alto de la imagen y centrada
+  const h = H - MARGIN * 2
+  const w = (h * PHOTO_W) / PHOTO_H
+  const photo = scarfPhotoSvg({
+    base: base.fill,
+    fringe: fringe?.fill ?? null,
+    bodyHref: BODY,
+    fringeHref: FRINGE,
+  }).replace(
     /^<svg[^>]*>/,
-    `<svg x="${(W - w) / 2}" y="${(H - h) / 2}" width="${w}" height="${h}" viewBox="0 0 ${size.width} ${size.height}">`,
+    `<svg x="${(W - w) / 2}" y="${MARGIN}" width="${w}" height="${h}" viewBox="0 0 ${PHOTO_W} ${PHOTO_H}">`,
   )
 
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">` +
-    `<rect width="${W}" height="${H}" fill="${theme.bg}"/>${scarf}</svg>`
+    `<rect width="${W}" height="${H}" fill="${theme.bg}"/>${photo}</svg>`
 
   const png = new Resvg(svg, { fitTo: { mode: 'width', value: W } }).render().asPng()
 

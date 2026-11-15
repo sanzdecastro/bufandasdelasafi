@@ -1,126 +1,55 @@
 <script setup lang="ts">
-// Bufanda en SVG. La geometría (canalé A + B y flecos) está en src/scarf/geometry.ts,
-// compartida con la imagen que se genera para WhatsApp.
+// Bufanda realista: la foto de Figma (15:8249) en dos capas teñidas con filtros SVG
+// (ver src/scarf/photo.ts). El mismo SVG genera la imagen de WhatsApp en api/og.ts.
 import { computed, ref } from 'vue'
 import { useDragScroll } from '../composables/useDragScroll'
 import type { YarnColor } from '../data/options'
-import {
-  bStitches,
-  COLUMN_B_W,
-  COLUMN_W,
-  FRINGE_COLUMNS,
-  HEIGHT,
-  RIB_W,
-  stitches,
-} from '../scarf/geometry'
+import { scarfPhotoSvg } from '../scarf/photo'
+
+const props = defineProps<{
+  base: YarnColor
+  fringe: YarnColor | null
+  label: string
+}>()
 
 // Escritorio: arrastrar la bufanda con el ratón o desplazarla con la rueda
 const previewEl = ref<HTMLElement | null>(null)
 useDragScroll(previewEl)
 
-const props = defineProps<{
-  base: YarnColor
-  fringe: YarnColor | null
-  bodyRibs: number
-  label: string
-}>()
-
-const fringeWidth = computed(() => (props.fringe ? FRINGE_COLUMNS * COLUMN_W : 0))
-const bodyWidth = computed(() => props.bodyRibs * RIB_W)
-// Flecos en los dos extremos
-const width = computed(() => fringeWidth.value * 2 + bodyWidth.value)
+// SVG fijo: los colores entran por variables CSS, así cambian (y se animan) sin rehacerlo
+const svg = scarfPhotoSvg({
+  base: 'var(--scarf-base)',
+  fringe: 'var(--scarf-fringe)',
+  bodyHref: '/scarf/cuerpo.png',
+  fringeHref: '/scarf/flecos.png',
+  id: 'web',
+})
 
 const vars = computed(() => ({
-  '--base-fill': props.base.fill,
-  '--base-edge': props.base.edge,
-  '--base-gap': props.base.gap,
-  '--fringe-fill': props.fringe?.fill ?? 'transparent',
-  '--scarf-w': width.value,
-  '--scarf-h': HEIGHT,
+  '--scarf-base': props.base.fill,
+  // Sin flecos la capa se oculta; se mantiene un color para que no haya salto al volver
+  '--scarf-fringe': props.fringe?.fill ?? props.base.fill,
 }))
 </script>
 
 <template>
   <div ref="previewEl" class="preview" data-enter="slide-left">
-    <svg
-      class="scarf"
-      :width="width"
-      :height="HEIGHT"
-      :viewBox="`0 0 ${width} ${HEIGHT}`"
+    <div
+      class="photo"
+      :class="{ 'no-fringe': !fringe }"
       :style="vars"
       role="img"
       :aria-label="label"
-    >
-      <defs>
-        <g id="scarf-col-body">
-          <rect
-            v-for="(s, i) in stitches"
-            :key="i"
-            x="0.5"
-            :y="s.y + 0.5"
-            width="9"
-            :height="s.h - 1"
-            :rx="(s.h - 1) / 2"
-            style="fill: var(--base-fill); stroke: var(--base-edge); stroke-width: 1"
-          />
-        </g>
-        <g id="scarf-col-body-b">
-          <rect
-            v-for="(s, i) in bStitches"
-            :key="i"
-            x="0.5"
-            :y="s.y + 0.5"
-            :width="COLUMN_B_W - 1"
-            :height="s.h - 1"
-            :rx="(COLUMN_B_W - 1) / 2"
-            style="fill: var(--base-fill); stroke: var(--base-edge); stroke-width: 1"
-          />
-        </g>
-        <g id="scarf-col-fringe">
-          <template v-for="(s, i) in stitches" :key="i">
-            <!-- Flecos sin borde: la cápsula ocupa su caja entera (10 × 5–6) -->
-            <rect
-              v-if="i % 2 === 0"
-              x="0"
-              :y="s.y"
-              width="10"
-              :height="s.h"
-              :rx="s.h / 2"
-              style="fill: var(--fringe-fill)"
-            />
-          </template>
-        </g>
-      </defs>
-
-      <template v-if="fringe">
-        <g class="fringe fringe-start">
-          <g class="grow grow-start">
-            <use v-for="c in FRINGE_COLUMNS" :key="c" href="#scarf-col-fringe" :x="(c - 1) * COLUMN_W" />
-          </g>
-        </g>
-        <g class="fringe fringe-end" :transform="`translate(${fringeWidth + bodyWidth} 0)`">
-          <g class="grow grow-end">
-            <use v-for="c in FRINGE_COLUMNS" :key="c" href="#scarf-col-fringe" :x="(c - 1) * COLUMN_W" />
-          </g>
-        </g>
-      </template>
-
-      <g class="body" :transform="`translate(${fringeWidth} 0)`">
-        <rect x="3" y="4" :width="bodyWidth - 6" :height="HEIGHT - 6" style="fill: var(--base-gap)" />
-        <template v-for="r in bodyRibs" :key="r">
-          <use href="#scarf-col-body" :x="(r - 1) * RIB_W" />
-          <use href="#scarf-col-body-b" :x="(r - 1) * RIB_W + COLUMN_W" />
-        </template>
-      </g>
-    </svg>
+      v-html="svg"
+    />
   </div>
 </template>
 
 <style scoped>
-/* La bufanda es más ancha que la pantalla: se desplaza en horizontal, como en el diseño */
+/* Como en Figma (611 × 458 a x=2): sobresale por la derecha y se recorre en horizontal */
 .preview {
   overflow-x: auto;
-  padding: 0 calc(42 * var(--u));
+  padding: 0 calc(2 * var(--u));
   scrollbar-width: none;
 }
 
@@ -139,41 +68,40 @@ const vars = computed(() => ({
   display: none;
 }
 
-/* Siempre a tamaño real: nunca se encoge para caber, se recorre con scroll */
-.scarf {
-  display: block;
+/* Alto de Figma (458) o el que quede libre en la pantalla, sin deformar la foto */
+.photo {
   flex: none;
-  /* Dibujada en px de Figma (viewBox); se escala con la unidad proporcional */
-  width: calc(var(--scarf-w) * var(--u));
-  height: calc(var(--scarf-h) * var(--u));
+  height: min(calc(458 * var(--u)), 100%);
+  aspect-ratio: 1024 / 768;
+  transition:
+    --scarf-base 0.5s ease,
+    --scarf-fringe 0.5s ease;
 }
 
-/* Al añadir flecos, crecen desde los extremos del cuerpo hacia fuera */
-.grow {
+.photo :deep(svg) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Flecos: al añadirlos crecen desde el borde del cuerpo; al quitarlos se recogen */
+.photo :deep(.scarf-fringe) {
   transform-box: fill-box;
-  animation: fringe-grow 0.45s ease-out;
-}
-
-.grow-start {
   transform-origin: right center;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease;
 }
 
-.grow-end {
-  transform-origin: left center;
-}
-
-@keyframes fringe-grow {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
+.photo.no-fringe :deep(.scarf-fringe) {
+  transform: scaleX(0.4);
+  opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .grow {
-    animation: none;
+  .photo,
+  .photo :deep(.scarf-fringe) {
+    transition: none;
   }
 }
 </style>
