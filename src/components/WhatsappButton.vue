@@ -16,17 +16,17 @@ const { price } = useScarfConfig()
 
 <style scoped>
 /*
- * Figma 3:8068: 380 × 53 en un frame de 393 (7 px a cada lado), 13 px por encima del borde
- * inferior. Fondo con el color de marca y texto con el de resaltado (los dos del tema, que
+ * Figma 3:8068 (en el contenedor 15:8348): a todo el ancho (393 × 53), 12 px por encima del
+ * borde inferior. Fondo con el color de marca y texto con el de resaltado (los dos del tema, que
  * garantiza contraste AA entre ellos). Texto recortado a la altura de las mayúsculas (21 px)
  * con 16 px arriba y abajo.
  */
 .whatsapp {
   flex: none;
-  align-self: center;
+  align-self: stretch;
   /* Abajo del todo: el hueco libre queda entre el resumen y el botón */
   margin-top: auto;
-  margin-bottom: max(calc(13 * var(--u)), env(safe-area-inset-bottom));
+  margin-bottom: max(calc(12 * var(--u)), env(safe-area-inset-bottom));
   display: flex;
   align-items: center;
   justify-content: center;

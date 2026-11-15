@@ -194,7 +194,8 @@ watch(
 /* Figma 3:8155: 18 px arriba, 53 px entre cabecera y opciones */
 .top {
   flex: none;
-  padding-top: calc(18 * var(--u));
+  /* Figma 15:8347: 12 px arriba */
+  padding-top: calc(12 * var(--u));
   display: flex;
   flex-direction: column;
   /* Figma 3:8155: cabecera · presentación · opciones, separadas 18 px */
