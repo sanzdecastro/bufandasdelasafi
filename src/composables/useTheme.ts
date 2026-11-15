@@ -103,6 +103,5 @@ export function applyTheme(theme: Theme): void {
   root.setProperty('--color-bg', theme.bg)
   root.setProperty('--color-brand', theme.brand)
   root.setProperty('--color-highlight', theme.highlight)
-  root.setProperty('--color-cta-text', theme.brand)
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme.bg)
 }

@@ -10,14 +10,16 @@ const { price } = useScarfConfig()
 
 <template>
   <a class="whatsapp" data-enter="slide-up" :href="url" target="_blank" rel="noopener">
-    {{ COPY.whatsappButton }} — {{ price }}€
+    <span class="whatsapp-text">{{ COPY.whatsappButton }} — {{ price }}€</span>
   </a>
 </template>
 
 <style scoped>
 /*
- * Figma: 380 × 53 en un frame de 393 (7 px a cada lado), 13 px por encima del borde inferior.
- * Todas las medidas son proporcionales (--u), así que siempre cabe en una línea.
+ * Figma 3:8068: 380 × 53 en un frame de 393 (7 px a cada lado), 13 px por encima del borde
+ * inferior. Fondo con el color de marca y texto con el de resaltado (los dos del tema, que
+ * garantiza contraste AA entre ellos). Texto recortado a la altura de las mayúsculas (21 px)
+ * con 16 px arriba y abajo.
  */
 .whatsapp {
   flex: none;
@@ -28,7 +30,7 @@ const { price } = useScarfConfig()
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: calc(8 * var(--u)) calc(24 * var(--u));
+  padding: calc(16 * var(--u)) calc(24 * var(--u));
   border-radius: calc(48 * var(--u));
   background: var(--color-cta-bg);
   font-size: var(--text-l);
@@ -38,7 +40,21 @@ const { price } = useScarfConfig()
   white-space: nowrap;
 }
 
+.whatsapp-text {
+  display: block;
+  line-height: 0.9997;
+  text-box: trim-both cap alphabetic;
+}
+
+/* Sin text-box (Firefox): mismo recorte con los márgenes medidos para Offset TM */
+@supports not (text-box: trim-both cap alphabetic) {
+  .whatsapp-text {
+    margin-top: -0.1434em;
+    margin-bottom: -0.1405em;
+  }
+}
+
 .whatsapp:active {
-  background: rgba(0, 0, 0, 0.16);
+  filter: brightness(0.9);
 }
 </style>

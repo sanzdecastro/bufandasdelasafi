@@ -43,8 +43,9 @@
   --color-brand: var(--carta-07-7038);
   --color-highlight: var(--carta-07-714);
   --color-swatch-ring: #000;
-  --color-cta-text: var(--carta-07-7596);
-  --color-cta-bg: rgba(0, 0, 0, 0.1);
+  /* Botón de compra (Figma 3:8068): fondo de marca y texto de resaltado (Carta-07/7038 y /714) */
+  --color-cta-bg: var(--color-brand);
+  --color-cta-text: var(--color-highlight);
 
   /* Tipografía */
   --font-display: 'Offset TM', 'Helvetica Neue', Arial, sans-serif;
