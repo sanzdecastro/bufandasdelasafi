@@ -53,11 +53,11 @@
   --font-caption: 'Arimo', Arial, sans-serif;
   --text-xl: calc(32 * var(--u));
   --text-l: calc(30 * var(--u));
-  --text-caption: calc(16 * var(--u));
+  --text-caption: calc(14 * var(--u));
   --text-caption-label: calc(18 * var(--u));
-  --text-description: calc(16 * var(--u));
-  /* Interlineado de Arimo 16 px en Figma (18 px por línea) */
-  --leading-description: calc(18 * var(--u));
+  --text-description: calc(14 * var(--u));
+  /* Interlineado de Arimo 14 px (16 px por línea) */
+  --leading-description: calc(16 * var(--u));
   --text-intro: calc(30.41 * var(--u));
 
   /* Medidas del builder */

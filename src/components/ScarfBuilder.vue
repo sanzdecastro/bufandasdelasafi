@@ -222,7 +222,7 @@ function pickFromSheet(id: string) {
   gap: calc(18 * var(--u));
 }
 
-/* Presentación: Arimo 16 px a todo el ancho, con 12 px a los lados */
+/* Presentación: Arimo 14 px a todo el ancho, con 12 px a los lados */
 .intro-text {
   margin: 0;
   padding: 0 calc(12 * var(--u));

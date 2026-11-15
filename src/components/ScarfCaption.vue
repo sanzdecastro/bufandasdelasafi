@@ -93,8 +93,8 @@ function shuffle() {
 
 .shuffle-icon {
   flex: none;
-  width: calc(16 * var(--u));
-  height: calc(16 * var(--u));
+  width: calc(14 * var(--u));
+  height: calc(14 * var(--u));
   stroke-width: 1.75;
   transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -112,7 +112,7 @@ function shuffle() {
   }
 }
 
-/* Descripción: Arimo 16 px a todo el ancho (dos líneas en el diseño) */
+/* Descripción: Arimo 14 px a todo el ancho, en dos líneas */
 .description strong {
   font-weight: 700;
 }
@@ -125,7 +125,7 @@ function shuffle() {
 
 /*
  * Colores (Figma 15:8291): dos mitades iguales. Cada una: etiqueta Offset TM 18 px, 8 px,
- * punto de 11 px con el color elegido, 2 px y código Arimo 16 px recortado a la altura de
+ * punto de 11 px con el color elegido, 2 px y código Arimo 14 px recortado a la altura de
  * las mayúsculas (11 px), todo centrado en vertical.
  */
 .colors {
