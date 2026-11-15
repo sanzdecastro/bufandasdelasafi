@@ -38,6 +38,7 @@ export function GET(request: Request): Response {
     fringe: fringe?.fill ?? null,
     bodyHref: BODY,
     fringeHref: FRINGE,
+    shadow: theme.brand,
   }).replace(
     /^<svg[^>]*>/,
     `<svg x="${(W - w) / 2}" y="${MARGIN}" width="${w}" height="${h}" viewBox="0 0 ${PHOTO_W} ${PHOTO_H}">`,

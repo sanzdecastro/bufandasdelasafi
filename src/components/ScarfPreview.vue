@@ -26,6 +26,7 @@ const svg = scarfPhotoSvg({
   fringeTone: fringeTone.value,
   bodyHref: '/scarf/cuerpo.png',
   fringeHref: '/scarf/flecos.png',
+  shadow: 'var(--color-brand)',
   id: 'web',
 })
 

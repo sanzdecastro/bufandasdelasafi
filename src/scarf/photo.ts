@@ -91,6 +91,21 @@ export function applyDyeParams(root: ParentNode, filterId: string, p: DyeParams)
   dye?.setAttribute('k4', String(p.k4))
 }
 
+/**
+ * Sombra bajo la bufanda: sigue la silueta de las dos capas (no el marco de la foto) y se tiñe
+ * con el color de marca para no ensuciar el fondo pastel. Medidas en unidades del viewBox
+ * (la foto se ve a ~0,6 de su tamaño: 16 unidades ≈ 10 px).
+ */
+const SHADOW = { dy: 16, blur: 16, opacity: 0.32 }
+
+function shadowFilter(id: string, color: string): string {
+  return (
+    `<filter id="${id}" x="-5%" y="-5%" width="110%" height="115%" color-interpolation-filters="sRGB">` +
+    `<feDropShadow dx="0" dy="${SHADOW.dy}" stdDeviation="${SHADOW.blur}" style="flood-color: ${color}; flood-opacity: ${SHADOW.opacity}"/>` +
+    `</filter>`
+  )
+}
+
 export interface ScarfPhotoOptions {
   /** Color de la base: hex o var(--…) */
   base: string
@@ -101,6 +116,8 @@ export interface ScarfPhotoOptions {
   fringeTone?: string
   bodyHref: string
   fringeHref: string
+  /** Color de la sombra (hex o var(--…)); sin él, la bufanda va sin sombra */
+  shadow?: string
   /** Prefijo para los ids de los filtros (evita choques si hay varias en la página) */
   id?: string
 }
@@ -115,9 +132,12 @@ export function scarfPhotoSvg(o: ScarfPhotoOptions): string {
       : `<g class="scarf-fringe"><image href="${o.fringeHref}" width="${PHOTO_W}" height="${PHOTO_H}" filter="url(#${id}-flecos)"/></g>`
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${PHOTO_W} ${PHOTO_H}" width="${PHOTO_W}" height="${PHOTO_H}">` +
-    `<defs>${dyeFilter(`${id}-cuerpo`, o.base, tone(o.base, o.baseTone))}${o.fringe === null ? '' : dyeFilter(`${id}-flecos`, o.fringe, tone(o.fringe, o.fringeTone))}</defs>` +
+    `<defs>${dyeFilter(`${id}-cuerpo`, o.base, tone(o.base, o.baseTone))}${o.fringe === null ? '' : dyeFilter(`${id}-flecos`, o.fringe, tone(o.fringe, o.fringeTone))}${o.shadow ? shadowFilter(`${id}-sombra`, o.shadow) : ''}</defs>` +
+    // Cuerpo y flecos en un grupo: la sombra sigue a los dos (y se va con los flecos al quitarlos)
+    `<g${o.shadow ? ` filter="url(#${id}-sombra)"` : ''}>` +
     `<image href="${o.bodyHref}" width="${PHOTO_W}" height="${PHOTO_H}" filter="url(#${id}-cuerpo)"/>` +
     fringeLayer +
+    `</g>` +
     `</svg>`
   )
 }
