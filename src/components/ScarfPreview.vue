@@ -1,10 +1,10 @@
 <script setup lang="ts">
 // Bufanda realista: la foto de Figma (15:8249) en dos capas teñidas con filtros SVG
 // (ver src/scarf/photo.ts). El mismo SVG genera la imagen de WhatsApp en api/og.ts.
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useDragScroll } from '../composables/useDragScroll'
 import type { YarnColor } from '../data/options'
-import { scarfPhotoSvg } from '../scarf/photo'
+import { applyDyeParams, dyeParams, scarfPhotoSvg } from '../scarf/photo'
 
 const props = defineProps<{
   base: YarnColor
@@ -17,9 +17,13 @@ const previewEl = ref<HTMLElement | null>(null)
 useDragScroll(previewEl)
 
 // SVG fijo: los colores entran por variables CSS, así cambian (y se animan) sin rehacerlo
+const fringeTone = computed(() => props.fringe?.fill ?? props.base.fill)
+
 const svg = scarfPhotoSvg({
   base: 'var(--scarf-base)',
   fringe: 'var(--scarf-fringe)',
+  baseTone: props.base.fill,
+  fringeTone: fringeTone.value,
   bodyHref: '/scarf/cuerpo.png',
   fringeHref: '/scarf/flecos.png',
   id: 'web',
@@ -28,13 +32,22 @@ const svg = scarfPhotoSvg({
 const vars = computed(() => ({
   '--scarf-base': props.base.fill,
   // Sin flecos la capa se oculta; se mantiene un color para que no haya salto al volver
-  '--scarf-fringe': props.fringe?.fill ?? props.base.fill,
+  '--scarf-fringe': fringeTone.value,
 }))
+
+// La sombra depende de lo claro que sea cada color: se ajusta en el filtro ya pintado
+const photoEl = ref<HTMLElement | null>(null)
+watch([() => props.base.fill, fringeTone], ([baseHex, fringeHex]) => {
+  if (!photoEl.value) return
+  applyDyeParams(photoEl.value, 'web-cuerpo', dyeParams(baseHex))
+  applyDyeParams(photoEl.value, 'web-flecos', dyeParams(fringeHex))
+})
 </script>
 
 <template>
   <div ref="previewEl" class="preview" data-enter="slide-left">
     <div
+      ref="photoEl"
       class="photo"
       :class="{ 'no-fringe': !fringe }"
       :style="vars"
