@@ -57,9 +57,9 @@ defineProps<{ base: YarnColor; fringe: YarnColor | null }>()
 }
 
 /*
- * Colores (Figma 15:8291): dos mitades iguales. Cada una: etiqueta Offset TM 24 px, 8 px,
- * punto de 11 px con el color elegido, 2 px y código Arimo 20 px recortado a la altura de
- * las mayúsculas (14 px), todo centrado en vertical.
+ * Colores (Figma 15:8291): dos mitades iguales. Cada una: etiqueta Offset TM 18 px, 8 px,
+ * punto de 11 px con el color elegido, 2 px y código Arimo 16 px recortado a la altura de
+ * las mayúsculas (11 px), todo centrado en vertical.
  */
 .colors {
   display: flex;
