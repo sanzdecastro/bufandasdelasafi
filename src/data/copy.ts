@@ -19,15 +19,7 @@ export const COPY = {
   },
   /** Enlace bajo la bufanda que carga otra propuesta de colores */
   shuffle: 'Otros colores',
-  /** Botón que abre el panel con las 20 cartas DMC */
-  moreColors: '+ colores',
   sameAsBase: 'Igual que la base',
-  sheet: {
-    base: 'Base',
-    fringe: 'Flecos',
-    close: 'Cerrar',
-    carta: 'Carta',
-  },
   /** Texto del botón (Figma 3:8068); el precio se añade detrás: «… — 50€» */
   whatsappButton: 'Encargar por WhatsApp',
   order: {

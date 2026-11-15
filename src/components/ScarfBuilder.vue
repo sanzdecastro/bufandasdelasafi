@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Builder (Figma 1:629)
 import { computed, nextTick, ref, watch } from 'vue'
-import { LENGTHS, findColor } from '../data/options'
+import { LENGTHS } from '../data/options'
 import { suggestBaseColors, suggestFringeColors } from '../data/proposal'
 import { COPY } from '../data/copy'
 import { useScarfConfig } from '../composables/useScarfConfig'
@@ -9,8 +9,6 @@ import BuilderHeader from './BuilderHeader.vue'
 import OptionRow from './OptionRow.vue'
 import TextOption from './TextOption.vue'
 import ColorSwatch from './ColorSwatch.vue'
-import MoreColorsButton from './MoreColorsButton.vue'
-import PaletteSheet from './PaletteSheet.vue'
 import ScarfPreview from './ScarfPreview.vue'
 import ScarfCaption from './ScarfCaption.vue'
 import WhatsappButton from './WhatsappButton.vue'
@@ -27,7 +25,8 @@ const previewLabel = computed(
 const baseOptions = computed(() => [baseColor.value, ...suggestBaseColors(baseColor.value.id)])
 
 // Flecos: «igual que la base», 3 en gama y 3 complementarios. Si el elegido no está entre
-// ellos (p. ej. venía del panel), se muestra delante para que siempre esté a la vista.
+// ellos (la propuesta aleatoria, un enlace de pedido o tras cambiar la base), se muestra
+// delante para que siempre esté a la vista.
 const fringeSuggestions = computed(() => suggestFringeColors(baseColor.value.id))
 const fringeExtra = computed(() => {
   const f = fringeColor.value
@@ -92,13 +91,6 @@ watch(
     }, ENTER.total)
   },
 )
-
-const sheet = ref<'base' | 'fringe' | null>(null)
-function pickFromSheet(id: string) {
-  if (!findColor(id)) return
-  if (sheet.value === 'base') state.baseColorId = id
-  else state.fringeColorId = id
-}
 </script>
 
 <template>
@@ -131,7 +123,6 @@ function pickFromSheet(id: string) {
             :selected="state.baseColorId === c.id"
             @select="state.baseColorId = c.id"
           />
-          <MoreColorsButton @open="sheet = 'base'" />
         </OptionRow>
 
         <OptionRow :label="COPY.labels.fringeColor">
@@ -172,7 +163,6 @@ function pickFromSheet(id: string) {
             :selected="state.fringeColorId === c.id"
             @select="state.fringeColorId = c.id"
           />
-          <MoreColorsButton @open="sheet = 'fringe'" />
         </OptionRow>
       </div>
     </div>
@@ -188,16 +178,6 @@ function pickFromSheet(id: string) {
     <ScarfCaption class="caption" data-enter="fade" :base="baseColor" :fringe="fringeColor" />
 
     <WhatsappButton />
-
-    <Transition name="sheet">
-      <PaletteSheet
-        v-if="sheet"
-        :title="sheet === 'base' ? COPY.sheet.base : COPY.sheet.fringe"
-        :selected-id="sheet === 'base' ? state.baseColorId : state.fringeColorId"
-        @select="pickFromSheet"
-        @close="sheet = null"
-      />
-    </Transition>
   </main>
 </template>
 
@@ -260,35 +240,5 @@ function pickFromSheet(id: string) {
   margin: 0 calc(4 * var(--u));
   background: var(--color-brand);
   opacity: 0.35;
-}
-
-/* Panel de cartas: sube desde abajo */
-.sheet-enter-active,
-.sheet-leave-active {
-  transition: opacity 0.25s ease;
-}
-
-.sheet-enter-active :deep(.sheet),
-.sheet-leave-active :deep(.sheet) {
-  transition: transform 0.3s ease;
-}
-
-.sheet-enter-from,
-.sheet-leave-to {
-  opacity: 0;
-}
-
-.sheet-enter-from :deep(.sheet),
-.sheet-leave-to :deep(.sheet) {
-  transform: translateY(100%);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sheet-enter-active,
-  .sheet-leave-active,
-  .sheet-enter-active :deep(.sheet),
-  .sheet-leave-active :deep(.sheet) {
-    transition: none;
-  }
 }
 </style>
