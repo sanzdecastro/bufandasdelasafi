@@ -4,7 +4,7 @@
 //   2. Las palabras se escriben a máquina: primero las letras más cercanas a Safi, luego
 //      las de los extremos.
 //   3. Cada «BUFANDAS» se transforma, letra a letra y con stagger entre palabras, en la del
-//      segundo frame: BUFANDAS → POR LA → SAFI / BUFANDAS → DESDE EL → SOFA.
+//      segundo frame: BUFANDAS → HECHAS POR → SAFI / BUFANDAS → DESDE → EL SOFA.
 // Un toque en cualquier momento salta la intro. Con «reducir movimiento» se muestra el
 // estado final directamente.
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
@@ -20,7 +20,7 @@ const firmaSvg = tint(firmaRaw)
 const trazoSvg = tint(trazoRaw)
 
 const FRAME_1 = { top: ['BUFANDAS', 'BUFANDAS', 'BUFANDAS'], bottom: ['BUFANDAS', 'BUFANDAS', 'BUFANDAS'] }
-const FRAME_2 = { top: ['BUFANDAS', 'POR LA', 'SAFI'], bottom: ['BUFANDAS', 'DESDE EL', 'SOFA'] }
+const FRAME_2 = { top: ['BUFANDAS', 'HECHAS POR', 'SAFI'], bottom: ['BUFANDAS', 'DESDE', 'EL SOFA'] }
 
 // Tiempos (ms)
 const T = {
