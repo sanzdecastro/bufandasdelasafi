@@ -54,7 +54,7 @@ export function useScarfConfig() {
   /** Precio total: largo + suplemento si lleva flecos */
   const price = computed(() => length.value.price + (fringeColor.value ? FRINGE_PRICE_EUR : 0))
 
-  /** «Otra combinación»: nueva propuesta de color; mantiene el largo y «Sin flecos» */
+  /** «Otros colores»: nueva propuesta de color; mantiene el largo y «Sin flecos» */
   function shuffleColors() {
     Object.assign(state, proposeOtherColors(state))
   }

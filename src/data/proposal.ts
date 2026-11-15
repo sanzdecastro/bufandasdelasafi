@@ -101,7 +101,7 @@ export function proposeColors(): ColorProposal {
 }
 
 /**
- * Otra propuesta distinta de la actual («Otra combinación»). Si la bufanda va sin flecos,
+ * Otra propuesta distinta de la actual («Otros colores»). Si la bufanda va sin flecos,
  * se mantiene sin flecos y solo cambia la base.
  */
 export function proposeOtherColors(current: {

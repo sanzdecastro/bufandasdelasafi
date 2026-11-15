@@ -69,7 +69,7 @@ function shuffle() {
 }
 
 /*
- * «Otra combinación»: enlace en la primera línea de la descripción, a la derecha (la primera
+ * «Otros colores»: enlace en la primera línea de la descripción, a la derecha (la primera
  * línea es corta y deja sitio). Mismo tamaño que la descripción, subrayado como los enlaces.
  */
 .shuffle {

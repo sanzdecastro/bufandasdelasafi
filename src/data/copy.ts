@@ -18,7 +18,7 @@ export const COPY = {
     rest: 'tejida a mano con materiales D·M·C.',
   },
   /** Enlace bajo la bufanda que carga otra propuesta de colores */
-  shuffle: 'Otra combinación',
+  shuffle: 'Otros colores',
   /** Botón que abre el panel con las 20 cartas DMC */
   moreColors: '+ colores',
   sameAsBase: 'Igual que la base',
