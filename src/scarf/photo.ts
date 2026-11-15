@@ -106,6 +106,45 @@ function shadowFilter(id: string, color: string): string {
   )
 }
 
+/**
+ * Bufanda entera a partir de un solo extremo (solo hay foto de uno):
+ *   extremo izquierdo (la foto hasta TILE_X) → tramo del cuerpo repetido → el mismo extremo
+ *   girado 180°.
+ * El tramo TILE_X…TILE_X + TILE_W (unas 10 columnas de punto) encaja consigo mismo; la junta
+ * con el extremo girado se funde en SEAM unidades. El cuerpo de la foto ocupa y ≈ 150–632 y
+ * su centro está DY por encima del de la imagen: el extremo girado se baja DY para alinearlo.
+ */
+const TILE_X = 578
+const TILE_W = 298
+const SEAM = 40
+const DY = 16
+const OVERLAP = 2
+/** Arranque del cuerpo en la foto (tras los nudos de los flecos) */
+const BODY_START = 300
+/** Unidades por cm: el cuerpo mide ~480 de alto y se supone una bufanda de 18 cm de ancho */
+const UNITS_PER_CM = 480 / 18
+
+export interface ScarfLayout {
+  /** Ancho total del SVG (el alto es PHOTO_H) */
+  width: number
+  /** Tramos repetidos: posición x y ancho (el último puede ir recortado) */
+  tiles: { x: number; w: number }[]
+  /** x donde empieza la foto girada */
+  endX: number
+}
+
+/** Medidas de la bufanda entera para un largo (cm de cuerpo, sin flecos) */
+export function scarfLayout(lengthCm: number): ScarfLayout {
+  const ends = 2 * (TILE_X - BODY_START)
+  const middle = Math.max(TILE_W, Math.round(lengthCm * UNITS_PER_CM - ends))
+  const tiles: { x: number; w: number }[] = []
+  // Los tramos pasan SEAM por debajo del extremo girado, que se funde sobre ellos
+  for (let x = 0; x < middle + SEAM; x += TILE_W) {
+    tiles.push({ x: TILE_X + x, w: Math.min(TILE_W, middle + SEAM - x) })
+  }
+  return { width: TILE_X * 2 + middle, tiles, endX: TILE_X + middle - (PHOTO_W - TILE_X) }
+}
+
 export interface ScarfPhotoOptions {
   /** Color de la base: hex o var(--…) */
   base: string
@@ -116,27 +155,55 @@ export interface ScarfPhotoOptions {
   fringeTone?: string
   bodyHref: string
   fringeHref: string
+  /** Largo del cuerpo en cm (sin flecos): decide cuántas veces se repite el tramo central */
+  lengthCm: number
   /** Color de la sombra (hex o var(--…)); sin él, la bufanda va sin sombra */
   shadow?: string
   /** Prefijo para los ids de los filtros (evita choques si hay varias en la página) */
   id?: string
 }
 
-/** La bufanda como SVG (viewBox 1024 × 768). Los flecos van en <g class="scarf-fringe">. */
+/**
+ * La bufanda entera como SVG (alto 768, ancho según el largo: ver scarfLayout). Los flecos van
+ * en <g class="scarf-fringe">, uno por extremo; el del extremo girado queda dentro de su giro.
+ */
 export function scarfPhotoSvg(o: ScarfPhotoOptions): string {
   const id = o.id ?? 'scarf'
   const tone = (color: string, hex?: string) => dyeParams(hex ?? color)
-  const fringeLayer =
-    o.fringe === null
-      ? ''
-      : `<g class="scarf-fringe"><image href="${o.fringeHref}" width="${PHOTO_W}" height="${PHOTO_H}" filter="url(#${id}-flecos)"/></g>`
+  const { width, tiles, endX } = scarfLayout(o.lengthCm)
+  const img = (href: string, extra = '') =>
+    `<image href="${href}" width="${PHOTO_W}" height="${PHOTO_H}"${extra}/>`
+  // Recorte de la foto: muestra las columnas from…from + w en la posición x. Cada recorte se
+  // alarga OVERLAP por la derecha para que el antialias no deje una línea entre tramos
+  const crop = (href: string, x: number, from: number, w: number) =>
+    `<svg x="${x}" y="0" width="${w + OVERLAP}" height="${PHOTO_H}" viewBox="${from} 0 ${w + OVERLAP} ${PHOTO_H}">${img(href)}</svg>`
+  // Extremo girado 180° (alrededor de su propio centro y bajado DY)
+  const rotated = `translate(${endX + PHOTO_W} ${DY + PHOTO_H}) rotate(180)`
+  const fringe = (inner: string) =>
+    o.fringe === null ? '' : `<g class="scarf-fringe" filter="url(#${id}-flecos)">${inner}</g>`
+
+  const defs =
+    dyeFilter(`${id}-cuerpo`, o.base, tone(o.base, o.baseTone)) +
+    (o.fringe === null ? '' : dyeFilter(`${id}-flecos`, o.fringe, tone(o.fringe, o.fringeTone))) +
+    (o.shadow ? shadowFilter(`${id}-sombra`, o.shadow) : '') +
+    // Junta con el extremo girado: su cuerpo se funde con el último tramo
+    `<linearGradient id="${id}-junta" gradientUnits="userSpaceOnUse" x1="${TILE_X - SEAM}" y1="0" x2="${TILE_X}" y2="0">` +
+    `<stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>` +
+    `<mask id="${id}-fin" maskUnits="userSpaceOnUse" x="0" y="0" width="${PHOTO_W}" height="${PHOTO_H}">` +
+    `<rect width="${PHOTO_W}" height="${PHOTO_H}" fill="url(#${id}-junta)"/></mask>`
+
   return (
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${PHOTO_W} ${PHOTO_H}" width="${PHOTO_W}" height="${PHOTO_H}">` +
-    `<defs>${dyeFilter(`${id}-cuerpo`, o.base, tone(o.base, o.baseTone))}${o.fringe === null ? '' : dyeFilter(`${id}-flecos`, o.fringe, tone(o.fringe, o.fringeTone))}${o.shadow ? shadowFilter(`${id}-sombra`, o.shadow) : ''}</defs>` +
-    // Cuerpo y flecos en un grupo: la sombra sigue a los dos (y se va con los flecos al quitarlos)
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${PHOTO_H}" width="${width}" height="${PHOTO_H}">` +
+    `<defs>${defs}</defs>` +
+    // Todo en un grupo: la sombra sigue a cuerpo y flecos (y se va con los flecos al quitarlos)
     `<g${o.shadow ? ` filter="url(#${id}-sombra)"` : ''}>` +
-    `<image href="${o.bodyHref}" width="${PHOTO_W}" height="${PHOTO_H}" filter="url(#${id}-cuerpo)"/>` +
-    fringeLayer +
+    `<g filter="url(#${id}-cuerpo)">` +
+    crop(o.bodyHref, 0, 0, TILE_X) +
+    tiles.map((t) => crop(o.bodyHref, t.x, TILE_X, t.w)).join('') +
+    `<g transform="${rotated}">${img(o.bodyHref, ` mask="url(#${id}-fin)"`)}</g>` +
+    `</g>` +
+    fringe(img(o.fringeHref)) +
+    `<g transform="${rotated}">${fringe(img(o.fringeHref))}</g>` +
     `</g>` +
     `</svg>`
   )

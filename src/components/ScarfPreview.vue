@@ -4,11 +4,13 @@
 import { computed, ref, watch } from 'vue'
 import { useDragScroll } from '../composables/useDragScroll'
 import type { YarnColor } from '../data/options'
-import { applyDyeParams, dyeParams, scarfPhotoSvg } from '../scarf/photo'
+import { PHOTO_H, applyDyeParams, dyeParams, scarfLayout, scarfPhotoSvg } from '../scarf/photo'
 
 const props = defineProps<{
   base: YarnColor
   fringe: YarnColor | null
+  /** Largo en cm: la bufanda se ve entera y más larga o más corta */
+  lengthCm: number
   label: string
 }>()
 
@@ -19,18 +21,28 @@ useDragScroll(previewEl)
 // SVG fijo: los colores entran por variables CSS, así cambian (y se animan) sin rehacerlo
 const fringeTone = computed(() => props.fringe?.fill ?? props.base.fill)
 
-const svg = scarfPhotoSvg({
-  base: 'var(--scarf-base)',
-  fringe: 'var(--scarf-fringe)',
-  baseTone: props.base.fill,
-  fringeTone: fringeTone.value,
-  bodyHref: '/scarf/cuerpo.png',
-  fringeHref: '/scarf/flecos.png',
-  shadow: 'var(--color-brand)',
-  id: 'web',
-})
+// Solo se rehace al cambiar el largo (con la sombra del color de ese momento)
+const buildSvg = (lengthCm: number) =>
+  scarfPhotoSvg({
+    base: 'var(--scarf-base)',
+    fringe: 'var(--scarf-fringe)',
+    baseTone: props.base.fill,
+    fringeTone: fringeTone.value,
+    bodyHref: '/scarf/cuerpo.png',
+    fringeHref: '/scarf/flecos.png',
+    shadow: 'var(--color-brand)',
+    lengthCm,
+    id: 'web',
+  })
+const svg = ref(buildSvg(props.lengthCm))
+watch(
+  () => props.lengthCm,
+  (cm) => (svg.value = buildSvg(cm)),
+)
+const aspect = computed(() => `${scarfLayout(props.lengthCm).width} / ${PHOTO_H}`)
 
 const vars = computed(() => ({
+  aspectRatio: aspect.value,
   '--scarf-base': props.base.fill,
   // Sin flecos la capa se oculta; se mantiene un color para que no haya salto al volver
   '--scarf-fringe': fringeTone.value,
@@ -90,7 +102,7 @@ watch([() => props.base.fill, fringeTone], ([baseHex, fringeHex]) => {
 .photo {
   flex: none;
   height: calc(100% * 458 / 398);
-  aspect-ratio: 1024 / 768;
+  /* aspect-ratio: según el largo (scarfLayout), en línea */
   transition:
     --scarf-base 0.5s ease,
     --scarf-fringe 0.5s ease;

@@ -181,6 +181,7 @@ function pickFromSheet(id: string) {
       class="scarf"
       :base="baseColor"
       :fringe="fringeColor"
+      :length-cm="length.cm"
       :label="previewLabel"
     />
 

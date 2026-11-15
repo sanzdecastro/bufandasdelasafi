@@ -27,8 +27,8 @@ function shareMeta(): Plugin {
     ...(site ? [`<meta property="og:url" content="${site}/" />`] : []),
     `<meta property="og:image" content="${esc(image)}" />`,
     `<meta property="og:image:type" content="image/png" />`,
-    `<meta property="og:image:width" content="800" />`,
-    `<meta property="og:image:height" content="420" />`,
+    `<meta property="og:image:width" content="640" />`,
+    `<meta property="og:image:height" content="336" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
   ]
   return {
