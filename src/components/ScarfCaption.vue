@@ -62,6 +62,7 @@ function shuffle() {
   gap: calc(10 * var(--u));
   padding: 0 calc(12 * var(--u));
   color: var(--color-brand);
+  padding-bottom: 12px;
 }
 
 .caption p {
