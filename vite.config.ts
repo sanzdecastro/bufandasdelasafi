@@ -15,7 +15,8 @@ function shareMeta(): Plugin {
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
       : '')
   const image = `${site}/api/og?l=90&b=7292&f=7106`
-  const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+  const esc = (s: string) =>
+    s.replace(/\s*\n\s*/g, ' ').replace(/&/g, '&amp;').replace(/"/g, '&quot;')
   const title = 'Bufandas Safi'
   const tags = [
     `<meta name="description" content="${esc(COPY.intro)}" />`,

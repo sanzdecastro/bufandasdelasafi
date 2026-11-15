@@ -211,15 +211,14 @@ function pickFromSheet(id: string) {
   overflow: clip;
 }
 
-/* Figma 3:8155: 18 px arriba, 53 px entre cabecera y opciones */
 .top {
   flex: none;
   /* Figma 15:8347: 12 px arriba */
   padding-top: calc(12 * var(--u));
   display: flex;
   flex-direction: column;
-  /* Figma 3:8155: cabecera · presentación · opciones, separadas 18 px */
-  gap: calc(18 * var(--u));
+  /* Figma 3:8155: cabecera · presentación · opciones, separadas 12 px */
+  gap: calc(12 * var(--u));
 }
 
 /* Presentación: Arimo 14 px a todo el ancho, con 12 px a los lados */
@@ -230,6 +229,8 @@ function pickFromSheet(id: string) {
   font-size: var(--text-description);
   line-height: var(--leading-description);
   color: var(--color-brand);
+  /* Respeta el salto de línea del texto (Figma 15:8294) */
+  white-space: pre-line;
 }
 
 /* Figma 3:8154: etiquetas en x=11 y opciones desde 145 px; los carriles llegan al borde */

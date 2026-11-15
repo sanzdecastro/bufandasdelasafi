@@ -8,13 +8,13 @@ export const COPY = {
     fringeColor: 'Flecos',
     noFringe: 'Sin flecos',
   },
-  /** Presentación bajo la cabecera (Figma 15:8294) */
-  intro: 'Safi confecciona la bufanda personalizada para ti o para la persona que tienes en mente.',
+  /** Presentación bajo la cabecera (Figma 15:8294); el salto de línea va tras «para ti» */
+  intro: 'Safi confecciona bufandas personalizadas para ti\no para la persona a la que quieras abrigar.',
   /** Descripción bajo la bufanda (Figma 15:8292) */
   // Primera línea con el material en negrita; la segunda va en línea aparte (Figma 15:8292)
   scarfDescription: {
     lead: 'Bufanda de',
-    strong: 'algodon 100%',
+    strong: 'algodón 100%',
     rest: 'tejida a mano con materiales D·M·C.',
   },
   /** Enlace bajo la bufanda que carga otra propuesta de colores */
