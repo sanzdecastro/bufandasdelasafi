@@ -22,6 +22,8 @@ const { price } = useScarfConfig()
 .whatsapp {
   flex: none;
   align-self: center;
+  /* Abajo del todo: el hueco libre queda entre el resumen y el botón */
+  margin-top: auto;
   margin-bottom: max(calc(13 * var(--u)), env(safe-area-inset-bottom));
   display: flex;
   align-items: center;

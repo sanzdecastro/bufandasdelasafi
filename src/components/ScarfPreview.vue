@@ -59,10 +59,13 @@ watch([() => props.base.fill, fringeTone], ([baseHex, fringeHex]) => {
 </template>
 
 <style scoped>
-/* Como en Figma (611 × 458 a x=2): sobresale por la derecha y se recorre en horizontal */
+/*
+ * Figma 15:8254: marco de 393 × 398 que recorta la foto (611 × 458, a la izquierda y
+ * centrada en vertical por ScarfBuilder). Lo que sobresale a la derecha se puede desplazar.
+ */
 .preview {
   overflow-x: auto;
-  padding: 0 calc(2 * var(--u));
+  overflow-y: hidden;
   scrollbar-width: none;
 }
 
@@ -81,10 +84,11 @@ watch([() => props.base.fill, fringeTone], ([baseHex, fringeHex]) => {
   display: none;
 }
 
-/* Alto de Figma (458) o el que quede libre en la pantalla, sin deformar la foto */
+/* 458 / 398 del alto del marco: a 852 de alto son los 458 px de Figma; si el marco se
+   encoge en pantallas bajas, la foto se reduce en la misma proporción */
 .photo {
   flex: none;
-  height: min(calc(458 * var(--u)), 100%);
+  height: calc(100% * 458 / 398);
   aspect-ratio: 1024 / 768;
   transition:
     --scarf-base 0.5s ease,

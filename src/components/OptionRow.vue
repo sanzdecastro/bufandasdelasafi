@@ -77,17 +77,16 @@ onBeforeUnmount(() => {
 }
 
 /*
- * Etiqueta: en mayúsculas y color de marca (Figma 3:8146), al mismo tamaño que las opciones
- * (30 px). Recortada a la altura de las mayúsculas (0.7158em) y centrada en la fila.
+ * Etiqueta (Figma 3:8146): Offset TM 32 px tal como está escrita, color de marca.
+ * Recortada a la altura de las mayúsculas (0.7158em) y centrada en la fila.
  */
 .label {
   position: absolute;
   left: calc(11 * var(--u));
   top: calc((var(--row-height) - 0.7158em) / 2);
   z-index: 0;
-  font-size: var(--text-l);
+  font-size: var(--text-xl);
   line-height: 0.9997;
-  text-transform: uppercase;
   text-box: trim-both cap alphabetic;
   color: var(--color-brand);
   white-space: nowrap;
